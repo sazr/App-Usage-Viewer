@@ -5,9 +5,7 @@ Desktop application that allows you to view application interactions (for Window
 Download Installer: [Github Release](http://github/sazr/AppUsageViewer "Github Release")
 
 Screenshots:   
-![alt text](https://raw.githubusercontent.com/sazr/WindowTiler/master/Markdown_Images/1.png "Eg 1")   
+![alt text](https://raw.githubusercontent.com/sazr/AppUsageViewer/master/Markdown_Images/1.png "Eg 1")   
 
 
-![alt text](https://raw.githubusercontent.com/sazr/WindowTiler/master/Markdown_Images/2.png "Eg 2")   
- 
 
