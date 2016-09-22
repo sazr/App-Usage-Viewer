@@ -27,11 +27,6 @@ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// stdafx.h : include file for standard system include files,
-// or project specific include files that are used frequently, but
-// are changed infrequently
-//
-
 #include "stdafx.h"
 #include "App.h"
 
@@ -39,9 +34,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Status App::WM_MENU_REPORT_BUG		= Status::registerState(_T("WM_MENU_REPORT_BUG"));
 Status App::WM_MENU_DONATE			= Status::registerState(_T("WM_MENU_DONATE"));
 Status App::WM_MENU_EXIT			= Status::registerState(_T("WM_MENU_EXIT"));
-
-
-// Static Function Implementation //
 
 
 // Function Implementation //
@@ -83,14 +75,16 @@ Status App::init(const IEventArgs& evtArgs)
 	addComponent<DPIAwareComponent>(app);
 	addComponent<PingUsageLogsComponent>(app, usageLogFileDirectory, pingUid);
 	addComponent<BorderWindowComponent>(app, RECT{ 6, 6, 388, 588 });
-	sysTrayCmp		= addComponent<SystemTrayComponent>(app, _T("images/small.ico"), _T("App Usage Viewer"));
-	auto tskDkCmp	= addComponent<TaskBarDockComponent>(app, SIZE{ 20, 20 });
+
+	sysTrayCmp = addComponent<SystemTrayComponent>(app, _T("images/small.ico"), 
+		_T("App Usage Viewer"));
+	auto tskDkCmp = addComponent<TaskBarDockComponent>(app, SIZE{ 20, 20 });
 
 	Win32App::init(evtArgs);
 	
-	#pragma message("Todo: make win32app have flag for dpiaware scale")
 	DPIAwareComponent::scaleRect(wndDimensions);
-	SetWindowPos(hwnd, 0, wndDimensions.left, wndDimensions.top, wndDimensions.right, wndDimensions.bottom, 0);
+	SetWindowPos(hwnd, 0, wndDimensions.left, wndDimensions.top, 
+		wndDimensions.right, wndDimensions.bottom, 0);
 	ShowWindow(hwnd, SW_HIDE); // Hide window till downloads are complete
 
 	initMenu();
@@ -99,7 +93,8 @@ Status App::init(const IEventArgs& evtArgs)
 
 	registerEvent(SystemTrayComponent::WM_TRAY_ICON.state, &App::onTrayIconInteraction);
 	registerEvent(WM_ACTIVATEAPP, &App::onKillFocus);
-	registerEvent(DispatchWindowComponent::translateMessage(pingUid, PingUsageLogsComponent::WM_PING_COMPLETE), &App::parseUsageFiles);
+	registerEvent(DispatchWindowComponent::translateMessage(pingUid, 
+		PingUsageLogsComponent::WM_PING_COMPLETE), &App::parseUsageFiles);
 
 	const WinEventArgs wArgs(hinstance, hwnd, 0, 0);
 	parseUsageFiles(wArgs);
@@ -122,12 +117,14 @@ Status App::onTrayIconInteraction(const IEventArgs& evtArgs)
 	if (args.wParam != sysTrayCmp->trayIconID.state)
 		return S_SUCCESS;
 
-	if (args.lParam == WM_LBUTTONDOWN) {
+	if (args.lParam == WM_LBUTTONDOWN) 
+	{
 		if (IsWindowVisible(hwnd))
 			ShowWindow(hwnd, SW_HIDE);
 		else ShowWindow(hwnd, SW_SHOW);
 	}
-	else if (args.lParam == WM_RBUTTONDOWN) {
+	else if (args.lParam == WM_RBUTTONDOWN) 
+	{
 		POINT curPoint;
 		GetCursorPos(&curPoint);
 		SetForegroundWindow(args.hwnd);
@@ -167,6 +164,7 @@ Status App::addSubjectInfoLV(const WinEventArgs& args)
 {
 	RECT rcClient;                      
 	GetClientRect(hwnd, &rcClient);
+
 	int buffer = 20;
 	int x = buffer;
 	int y = buffer;
@@ -183,11 +181,15 @@ Status App::addSubjectInfoLV(const WinEventArgs& args)
 		NULL);
 
 	// Insert LV columns
-	TCHAR* columnHeaders[6] = { _T("Uid"), _T("Monitors"), _T("Windows Version"), _T("Timezone Standard Name")};
+	TCHAR* columnHeaders[] = { 
+		_T("Uid"), _T("Monitors"), 
+		_T("Windows Version"), _T("Timezone Standard Name")
+	};
 	LVCOLUMN lvc;
 	lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 
-	for (int iCol = 0; iCol < 4; iCol++) {
+	for (int iCol = 0; iCol < 4; iCol++) 
+	{
 		lvc.iSubItem = iCol;
 		lvc.pszText = columnHeaders[iCol];
 		lvc.cx = 130;
@@ -197,7 +199,8 @@ Status App::addSubjectInfoLV(const WinEventArgs& args)
 		else
 			lvc.fmt = LVCFMT_RIGHT;
 
-		if (ListView_InsertColumn(subjInfoListView, iCol, &lvc) == -1) {
+		if (ListView_InsertColumn(subjInfoListView, iCol, &lvc) == -1) 
+		{
 			output(_T("Error ListView_InsertColumn\n"));
 			return S_UNDEFINED_ERROR;
 		}
@@ -210,6 +213,7 @@ Status App::addUsageLV(const WinEventArgs& args)
 {
 	RECT rcClient;
 	GetClientRect(hwnd, &rcClient);
+
 	int buffer = 20;
 	int x = buffer;
 	int y = (rcClient.bottom - rcClient.top - (buffer * 2)) * 0.25 + (buffer * 2);
@@ -226,11 +230,15 @@ Status App::addUsageLV(const WinEventArgs& args)
 		NULL);
 
 	// Insert LV columns
-	TCHAR* columnHeaders[6] = { _T("Uid Index"), _T("Time Stamp"), _T("Interaction"), _T("Type") };
+	TCHAR* columnHeaders[] = { 
+		_T("Uid Index"), _T("Time Stamp"), 
+		_T("Interaction"), _T("Type") 
+	};
 	LVCOLUMN lvc;
 	lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 
-	for (int iCol = 0; iCol < 4; iCol++) {
+	for (int iCol = 0; iCol < 4; iCol++) 
+	{
 		lvc.iSubItem = iCol;
 		lvc.pszText = columnHeaders[iCol];
 		lvc.cx = 130;
@@ -240,7 +248,8 @@ Status App::addUsageLV(const WinEventArgs& args)
 		else
 			lvc.fmt = LVCFMT_RIGHT;
 
-		if (ListView_InsertColumn(usageListView, iCol, &lvc) == -1) {
+		if (ListView_InsertColumn(usageListView, iCol, &lvc) == -1) 
+		{
 			output(_T("Error ListView_InsertColumn\n"));
 			return S_UNDEFINED_ERROR;
 		}
@@ -265,19 +274,23 @@ Status App::parseUsageFiles(const IEventArgs& evtArgs)
 	int index = (int)args.wParam;
 	TCHAR fPath[MAX_PATH];
 
-	do {
+	do 
+	{
 		index++;
 		_stprintf(fPath, _T("%s\\%d"), usageLogFileDirectory.c_str(), index);
 		int rowIndex = ListView_GetItemCount(subjInfoListView);
 
 		SubjectInformation sInfo;
 
-		if (!GetPrivateProfileStruct(_T("SubjectInformation"), _T("Information"), &sInfo, sizeof(SubjectInformation), fPath)) {
+		if (!GetPrivateProfileStruct(_T("SubjectInformation"), _T("Information"), 
+			&sInfo, sizeof(SubjectInformation), fPath)) 
+		{
 			output(_T("Failed to read struct\n"));
 			continue;
 		}
 
-		if (uidRowMap.find(sInfo.uid) != uidRowMap.end()) {
+		if (uidRowMap.find(sInfo.uid) != uidRowMap.end()) 
+		{
 			ListView_DeleteItem(subjInfoListView, uidRowMap[sInfo.uid]);
 			rowIndex--;
 		}
@@ -290,60 +303,67 @@ Status App::parseUsageFiles(const IEventArgs& evtArgs)
 		ListView_InsertItem(subjInfoListView, &lvi);
 
 		ListView_SetItemText(subjInfoListView, rowIndex, 0, sInfo.uid);
-		output(_T("uid: %s, "), sInfo.uid);
 
 		tstringstream ss;
 		ss << sInfo.nMonitors;
 		ListView_SetItemText(subjInfoListView, rowIndex, 1, (LPTSTR)ss.str().c_str());
-		output(_T("%s, "), ss.str().c_str());
 
 		ss.clear();
 		ss << sInfo.versionInfo.dwMajorVersion << _T("-") << sInfo.versionInfo.dwMinorVersion;
 		ListView_SetItemText(subjInfoListView, rowIndex, 2, (LPTSTR)ss.str().c_str());
-		output(_T("%s, "), ss.str().c_str());
 
 		ListView_SetItemText(subjInfoListView, rowIndex, 3, sInfo.timeZoneInfo.StandardName);
-		output(_T("%s\n"), sInfo.timeZoneInfo.StandardName);
+
 
 		// Populate interactions listview
 		int interIndex = 0;
 		UsageInformation uInfo;
 		TCHAR interactionKey[MAX_PATH];
 		_stprintf(interactionKey, _T("%d"), interIndex);
-		if (!GetPrivateProfileStruct(interactionKey, _T("Interaction"), &uInfo, sizeof(UsageInformation), fPath)) {
 
-			// Bug sometimes interIndex starts at 1 not 0
+		if (!GetPrivateProfileStruct(interactionKey, _T("Interaction"), 
+			&uInfo, sizeof(UsageInformation), fPath)) 
+		{
 			interIndex++;
 			_stprintf(interactionKey, _T("%d"), interIndex);
-			if (!GetPrivateProfileStruct(interactionKey, _T("Interaction"), &uInfo, sizeof(UsageInformation), fPath))
+
+			if (!GetPrivateProfileStruct(interactionKey, _T("Interaction"), 
+				&uInfo, sizeof(UsageInformation), fPath))
 				continue;
 		}
 
-		do {
+		do 
+		{
 			int interRow = ListView_GetItemCount(usageListView);
 
 			LVITEM lvi = { 0 };
 			lvi.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 			lvi.cColumns = 4;
 			lvi.iItem = interRow;
+
 			ListView_InsertItem(usageListView, &lvi);
 
 			TCHAR buf[10];
-			_stprintf(buf, _T("%d"), rowIndex + 1 /*index*/); 
+			_stprintf(buf, _T("%d"), rowIndex + 1); 
+
 			ListView_SetItemText(usageListView, interRow, 0, buf);
 
 			TCHAR timeStmp[MAX_PATH];
 			_tcsftime(timeStmp, MAX_PATH, _T("%Y-%m-%d %H:%M:%S"), gmtime(&uInfo.timeStamp));
+
 			ListView_SetItemText(usageListView, interRow, 1, timeStmp);
 
 			ListView_SetItemText(usageListView, interRow, 2, uInfo.annotation);
 
-			ListView_SetItemText(usageListView, interRow, 3, (uInfo.msg == -1) ? _T("Default") : _T("Event Based"));
+			ListView_SetItemText(usageListView, interRow, 3, 
+				(uInfo.msg == -1) ? _T("Default") : _T("Event Based"));
 			
 			interIndex++;
+
 			_stprintf(interactionKey, _T("%d"), interIndex);
 
-		} while (GetPrivateProfileStruct(interactionKey, _T("Interaction"), &uInfo, sizeof(UsageInformation), fPath));
+		} while (GetPrivateProfileStruct(interactionKey, _T("Interaction"), 
+			&uInfo, sizeof(UsageInformation), fPath));
 
 	} while (WinUtilityComponent::fileExists(tstring(fPath)) == S_SUCCESS);
 

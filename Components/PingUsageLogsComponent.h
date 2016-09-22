@@ -27,11 +27,6 @@ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// stdafx.h : include file for standard system include files,
-// or project specific include files that are used frequently, but
-// are changed infrequently
-//
-
 #ifndef AUV_PINGUSAGELOGSCMP_H
 #define AUV_PINGUSAGELOGSCMP_H
 
@@ -42,41 +37,23 @@ class PingUsageLogsComponent : public Component
 public:
 	friend class Component;
 
-	// Static Variables //
 	static Status WM_PING_COMPLETE;
 
-	// Static Methods //
-
-	// Class Variables //
-
-	// Class Methods //
 	virtual ~PingUsageLogsComponent();
 
 	Status init(const IEventArgs& evtArgs);
 	Status terminate(const IEventArgs& evtArgs);
 
 protected:
-	// Static Variables //
-
-	// Static Methods //
-
-	// Class Variables //
-
-	// Class Methods //
-	PingUsageLogsComponent(const std::weak_ptr<IApp>& app, const tstring& usageLogFileDirectory, STATE uid);
+	PingUsageLogsComponent(const std::weak_ptr<IApp>& app, 
+		const tstring& usageLogFileDirectory, STATE uid);
 
 	Status registerEvents();
 	Status onTimer(const IEventArgs& evtArgs);
 	Status onDownloadLogTimer(const IEventArgs& evtArgs);
 	Status onPingResponse(const IEventArgs& evtArgs);
-	//Status onDownloadLog(const IEventArgs& evtArgs);
 
 private:
-	// Static Variables //
-
-	// Static Methods //
-
-	// Class Variables //
 	STATE uid;
 	STATE pingUid;
 	STATE logDwnldUid;
@@ -88,9 +65,6 @@ private:
 	const tstring usageLogFileDirectory;
 	const std::string usageLogFileDirectoryA;
 	std::shared_ptr<DownloadComponent> dldCmp;
-
-	// Class Methods //
-
 };
 
 #endif // AUV_PINGUSAGELOGSCMP_H

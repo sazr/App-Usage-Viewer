@@ -27,13 +27,8 @@ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// stdafx.h : include file for standard system include files,
-// or project specific include files that are used frequently, but
-// are changed infrequently
-//
-
-#ifndef DEMO_APP_H
-#define DEMO_APP_H
+#ifndef APP_USAGE_VIEWER_H
+#define APP_USAGE_VIEWER_H
 
 #include "stdafx.h"
 
@@ -42,16 +37,10 @@ class App : public Win32App
 public:
 	friend class IApp;
 
-    // Static Variables //
 	static Status WM_MENU_REPORT_BUG;
 	static Status WM_MENU_DONATE;
 	static Status WM_MENU_EXIT;
 
-    // Static Methods //
-
-    // Class Variables //
-
-    // Class Methods //
 	virtual ~App();
 
 	Status init(const IEventArgs& evtArgs);
@@ -59,13 +48,6 @@ public:
 	Status terminate(const IEventArgs& evtArgs);
 
 protected:
-    // Static Variables //
-
-    // Static Methods //
-
-    // Class Variables //
-
-    // Class Methods //
 	App();
 
 	Status onTrayIconInteraction(const IEventArgs& evtArgs);
@@ -76,11 +58,6 @@ protected:
 	Status parseUsageFiles(const IEventArgs& evtArgs);
 
 private:
-    // Static Variables //
-
-    // Static Methods //
-
-    // Class Variables //
 	STATE pingUid;
 	STATE subjInfoLVUid;
 	STATE usageLVUid;
@@ -90,9 +67,6 @@ private:
 	HWND usageListView;
 	std::shared_ptr<SystemTrayComponent> sysTrayCmp;
 	std::map<tstring, int> uidRowMap;
-
-    // Class Methods //
-
 };
 
-#endif // DEMO_APP_H
+#endif // APP_USAGE_VIEWER_H
