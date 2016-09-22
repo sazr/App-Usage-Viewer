@@ -31,27 +31,29 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "App.h"
 
 // Class Property Implementation //
-Status App::WM_MENU_REPORT_BUG		= Status::registerState(_T("WM_MENU_REPORT_BUG"));
-Status App::WM_MENU_DONATE			= Status::registerState(_T("WM_MENU_DONATE"));
-Status App::WM_MENU_EXIT			= Status::registerState(_T("WM_MENU_EXIT"));
+Status App::WM_MENU_REPORT_BUG = Status::registerState( _T("WM_MENU_REPORT_BUG") );
+Status App::WM_MENU_DONATE = Status::registerState( _T("WM_MENU_DONATE") );
+Status App::WM_MENU_EXIT = Status::registerState( _T("WM_MENU_EXIT") );
 
 
 // Function Implementation //
 App::App() 
 	: Win32App(), 
-	subjInfoLVUid(Status::registerState(_T("Subject Info Listview Uid")).state),
-	usageLVUid(Status::registerState(_T("Usage Listview Uid")).state),
-	pingUid(Status::registerState(_T("Ping Uid")).state)
+	subjInfoLVUid( Status::registerState(_T("Subject Info Listview Uid")).state ),
+	usageLVUid( Status::registerState(_T("Usage Listview Uid")).state ),
+	pingUid( Status::registerState(_T("Ping Uid")).state )
 {
-	wndDimensions	= RECT{ -400, -400, 400, 600 };
-	bkColour		= CreateSolidBrush(RGB(50, 50, 50));
-	wndTitle		= _T("Application Usage Viewer");
-	wndFlags		= WS_EX_TOOLWINDOW | WS_POPUP;
-	iconID			= IDI_APP;
-	smallIconID		= IDI_SMALL;
+	wndDimensions = RECT{ -400, -400, 400, 600 };
+	bkColour = CreateSolidBrush(RGB(50, 50, 50));
+	wndTitle = _T("Application Usage Viewer");
+	wndFlags = WS_EX_TOOLWINDOW | WS_POPUP;
+	iconID = IDI_APP;
+	smallIconID = IDI_SMALL;
 
 	TCHAR szPath[MAX_PATH];
-	if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, szPath) == S_OK) {
+
+	if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, szPath) == S_OK) 
+	{
 		usageLogFileDirectory = tstring(szPath) + _T("\\AppUsageViewer\\usageLogs");
 		SHCreateDirectoryEx(NULL, usageLogFileDirectory.c_str(), NULL);
 	}
@@ -83,12 +85,16 @@ Status App::init(const IEventArgs& evtArgs)
 	Win32App::init(evtArgs);
 	
 	DPIAwareComponent::scaleRect(wndDimensions);
+
 	SetWindowPos(hwnd, 0, wndDimensions.left, wndDimensions.top, 
 		wndDimensions.right, wndDimensions.bottom, 0);
+
 	ShowWindow(hwnd, SW_HIDE); // Hide window till downloads are complete
 
 	initMenu();
+
 	addSubjectInfoLV(args);
+
 	addUsageLV(args);
 
 	registerEvent(SystemTrayComponent::WM_TRAY_ICON.state, &App::onTrayIconInteraction);
